@@ -174,9 +174,11 @@ int main()
     partitions.push_back(nonFinalStates);
 
     map<int, int> stateInPartition;
+    map<int, vector<int>> equalStates;
 
     while (1)
     {
+        int lastSize = partitions.size();
         for (int i = 1; i <= partitions.size(); i++)
         {
             for (auto j : partitions[i - 1])
@@ -194,16 +196,21 @@ int main()
                     {
                         if (stateInPartition[transitionTable[partition[i]][symbol]] == stateInPartition[transitionTable[partition[j]][symbol]])
                         {
-                            continue;
+                            equalStates[i].push_back(j);
+                            equalStates[j].push_back(i);
                         }
                         else
                         {
-                            partition.erase(find(partition.begin(),partition.end(),i))
+                            partition.erase(find(partition.begin(), partition.end(), i));
+                            partition.erase(find(partition.begin(), partition.end(), j));
+                            partitions.push_back({i});
+                            partitions.push_back({j});
                         }
                     }
                 }
             }
         }
+        if(lastSize == partitions.size()) break;
     }
 
     return 0;
