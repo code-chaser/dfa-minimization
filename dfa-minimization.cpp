@@ -83,18 +83,6 @@ int transition(int state, char symbol)
     return transitionTable[state][symbol];
 }
 
-bool equivalent(int state1, int state2)
-{
-    if (state1 == state2 || ((isFinal[state1]) && (isFinal[state2])))
-        return 1;
-    for (auto i : alphabet)
-    {
-        if (!equivalent(transitionTable[state1][i], transitionTable[state2][i]))
-            return 0;
-    }
-    return 1;
-}
-
 int main()
 {
     cout << "\nEnter the total number of states:\n";
@@ -164,7 +152,7 @@ int main()
         table[i][0] = reachableStates.size() - i + 1;
 
     vector<vector<int>> partitions;
-    partitions.pb(reachableFinalStates);
+    partitions.push_back(reachableFinalStates);
 
     vector<int> nonFinalStates;
     for (auto i : reachableStates)
@@ -179,6 +167,9 @@ int main()
     while (1)
     {
         int lastSize = partitions.size();
+        vector<vector<int>> newPartitions;
+        map<int, int> stateInNewPartition;
+        map<int, bool> allocated;
         for (int i = 1; i <= partitions.size(); i++)
         {
             for (auto j : partitions[i - 1])
@@ -201,17 +192,52 @@ int main()
                         }
                         else
                         {
-                            partition.erase(find(partition.begin(), partition.end(), i));
-                            partition.erase(find(partition.begin(), partition.end(), j));
-                            partitions.push_back({i});
-                            partitions.push_back({j});
+                            // insert i;
+                            for (auto ii : equalStates[i])
+                            {
+                                if (allocated[ii])
+                                {
+                                    newPartitions[stateInNewPartition[ii] - 1].push_back(i);
+                                    allocated[i] = 1;
+                                    stateInNewPartition[i] = stateInNewPartition[ii];
+                                    break;
+                                }
+                            }
+                            if (!allocated[i])
+                            {
+                                newPartitions.push_back({i});
+                                allocated[i] = 1;
+                                stateInNewPartition[i] = newPartitions.size();
+                            }
+
+                            // insert j;
+                            for (auto jj : equalStates[j])
+                            {
+                                if (allocated[jj])
+                                {
+                                    newPartitions[stateInNewPartition[jj] - 1].push_back(j);
+                                    allocated[j] = 1;
+                                    stateInNewPartition[j] = stateInNewPartition[jj];
+                                    break;
+                                }
+                            }
+                            if (!allocated[j])
+                            {
+                                newPartitions.push_back({j});
+                                allocated[j] = 1;
+                                stateInNewPartition[j] = newPartitions.size();
+                            }
                         }
                     }
                 }
             }
         }
-        if(lastSize == partitions.size()) break;
+        if (newPartitions.size() == partitions.size())
+            break;
+        partitions = newPartitions;
     }
+
+    cout<<"\nMinimum number of states required for the given DFA are: "<<partitions.size()<<"\n\n\n";
 
     return 0;
 }
