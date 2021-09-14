@@ -21,7 +21,7 @@ void print(T... arg)
 template <typename T1, typename T2>
 ostream &operator<<(ostream &cout, pair<T1, T2> p)
 {
-    cout << p.first << " " << p.second;
+    cout << p.first << " " << p.second << "\n";
     return cout;
 }
 template <typename T>
@@ -29,14 +29,14 @@ ostream &operator<<(ostream &cout, vector<T> v)
 {
     int cnt = 0;
     for (auto &i : v)
-        cout << i << ((++cnt) != v.size() ? " " : "");
+        cout << i << ((++cnt) != v.size() ? " " : "\n");
     return cout;
 }
 template <typename T1, typename T2>
 ostream &operator<<(ostream &cout, map<T1, T2> m)
 {
     for (auto i : m)
-        cout << i << "\n";
+        cout << i;
     cout << "\n";
     return cout;
 }
@@ -68,12 +68,12 @@ vector<char> alphabet;
 
 void reachable(int currentState, vector<char> alphabet = alphabet)
 {
-    isReachable[currentState] = 1;
+    if (currentState != -1 && currentState)
+        isReachable[currentState] = 1;
     for (auto i : alphabet)
     {
-        if ((transitionTable[currentState][i] != -1) && (transitionTable[currentState][i] != currentState) && (!isReachable[transitionTable[currentState][i]]))
+        if ((transitionTable[currentState][i] != -1) && (!isReachable[transitionTable[currentState][i]]))
             reachable(transitionTable[currentState][i], alphabet);
-        isReachable[transitionTable[currentState][i]] = 1;
     }
     return;
 }
@@ -128,11 +128,9 @@ int main()
     for (auto i : finalStates)
         isFinal[i] = 1;
 
-    cout << transitionTable;
-
     // marking reachable states;
     reachable(initialState, alphabet);
-    vector<int> reachableStates, reachableFinalStates;
+    vector<int> reachableStates, reachableFinalStates, reachableNonFinalStates;
     for (auto i : isReachable)
     {
         if (i.second)
@@ -140,6 +138,8 @@ int main()
             reachableStates.push_back(i.first);
             if (isFinal[i.first])
                 reachableFinalStates.push_back(i.first);
+            else
+                reachableNonFinalStates.push_back(i.first);
         }
         else
             isFinal[i.first] = 0;
@@ -153,20 +153,19 @@ int main()
 
     vector<vector<int>> partitions;
     partitions.push_back(reachableFinalStates);
-
-    vector<int> nonFinalStates;
-    for (auto i : reachableStates)
-        if (!isFinal[i])
-            nonFinalStates.push_back(i);
-
-    partitions.push_back(nonFinalStates);
+    partitions.push_back(reachableNonFinalStates);
 
     map<int, int> stateInPartition;
     map<int, vector<int>> equalStates;
 
+    cout << "\nReachable States: " << reachableStates << "\n";
+    cout << "\nReachable Final States: " << reachableFinalStates << "\n";
+    cout << "\nReachable Non-Final States: " << reachableNonFinalStates << "\n";
+    return 0;
+    int tempInt = 0;
     while (1)
     {
-        int lastSize = partitions.size();
+        tempInt++;
         vector<vector<int>> newPartitions;
         map<int, int> stateInNewPartition;
         map<int, bool> allocated;
@@ -187,8 +186,9 @@ int main()
                     {
                         if (stateInPartition[transitionTable[partition[i]][symbol]] == stateInPartition[transitionTable[partition[j]][symbol]])
                         {
-                            equalStates[i].push_back(j);
-                            equalStates[j].push_back(i);
+                            equalStates[partition[i]].push_back(partition[j]);
+                            equalStates[partition[j]].push_back(partition[i]);
+                            if(allocated[partition[i]])
                         }
                         else
                         {
@@ -197,7 +197,12 @@ int main()
                             {
                                 if (allocated[ii])
                                 {
-                                    newPartitions[stateInNewPartition[ii] - 1].push_back(i);
+                                    for (auto iii : equalStates[i])
+                                    {
+                                        if (iii == ii)
+                                            continue;
+                                        newPartitions[stateInNewPartition[ii] - 1].push_back(iii);
+                                    }
                                     allocated[i] = 1;
                                     stateInNewPartition[i] = stateInNewPartition[ii];
                                     break;
@@ -232,12 +237,13 @@ int main()
                 }
             }
         }
-        if (newPartitions.size() == partitions.size())
+        cout << "\n\nnewPartitions: " << newPartitions << "\npartitions: " << partitions << "\n";
+        if (newPartitions.size() == partitions.size() || tempInt == 5)
             break;
         partitions = newPartitions;
     }
 
-    cout<<"\nMinimum number of states required for the given DFA are: "<<partitions.size()<<"\n\n\n";
+    cout << "\nMinimum number of states required for the given DFA are: " << partitions.size() << "\n\n\n";
 
     return 0;
 }
