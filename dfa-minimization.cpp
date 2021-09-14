@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -85,6 +86,7 @@ int transition(int state, char symbol)
 
 int main()
 {
+    //freopen("input.txt", "r", stdin);
     cout << "\nEnter the total number of states:\n";
     cin >> numberOfStates;
     vector<int> states(numberOfStates);
@@ -145,15 +147,9 @@ int main()
             isFinal[i.first] = 0;
     }
 
-    vector<vector<int>> table(reachableStates.size(), vector<int>(reachableStates.size(), -2));
-    for (int i = 1; i < reachableStates.size(); i++)
-        table[0][i] = i;
-    for (int i = 1; i < reachableStates.size(); i++)
-        table[i][0] = reachableStates.size() - i + 1;
-
     vector<vector<int>> partitions;
-    partitions.push_back(reachableFinalStates);
     partitions.push_back(reachableNonFinalStates);
+    partitions.push_back(reachableFinalStates);
 
     map<int, int> stateInPartition;
 
@@ -176,18 +172,31 @@ int main()
         }
         for (auto partition : partitions)
         {
+            if (partition.size() == 1)
+            {
+                newPartitions.push_back(partition);
+                continue;
+            }
+            cout << "partition: " << partition << "\n";
             for (int i = 0; i < partition.size(); i++)
             {
                 if (checked[partition[i]])
                     continue;
+                if (i == partition.size() - 1)
+                {
+                    newPartitions.push_back({partition[i]});
+                    break;
+                }
                 checked[partition[i]] = 1;
                 for (int j = i + 1; j < partition.size(); j++)
                 {
+                    cout << "\nChecking " << partition[i] << " & " << partition[j] << ":";
                     bool flag = 1;
                     for (auto symbol : alphabet)
                     {
                         if (!(stateInPartition[transitionTable[partition[i]][symbol]] == stateInPartition[transitionTable[partition[j]][symbol]]))
                         {
+                            cout << "flagged 0 & allocated partition i is for " << partition[i] << " is: " << allocated[partition[i]] << "\n";
                             if (!allocated[partition[i]])
                             {
                                 newPartitions.push_back({partition[i]});
@@ -200,10 +209,11 @@ int main()
                     }
                     if (flag)
                     {
+                        cout << "flagged 1\n";
                         checked[partition[j]] = 1;
                         if (allocated[partition[i]])
                         {
-                            newPartitions[stateInNewPartition[partition[i]]].push_back(partition[j]);
+                            newPartitions[stateInNewPartition[partition[i]] - 1].push_back(partition[j]);
                             allocated[partition[j]] = 1;
                             stateInNewPartition[partition[j]] = stateInNewPartition[partition[i]];
                         }
