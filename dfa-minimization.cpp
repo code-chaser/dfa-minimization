@@ -86,7 +86,7 @@ int transition(int state, char symbol)
 
 int main()
 {
-    freopen("input.txt", "r", stdin);
+    //freopen("input.txt", "r", stdin);
     cout << "\nEnter the total number of states:\n";
     cin >> numberOfStates;
     vector<int> states(numberOfStates);
@@ -104,7 +104,7 @@ int main()
     getchar();
     for (int i = 0; i < numberOfStates; i++)
     {
-        cout << "\nFor state " << i + 1 << " which state do we get to, on entering following symbols (leave empty for phi):\n";
+        cout << "\nFor state " << i + 1 << " on entering following symbols, which state do we get to? (leave empty for phi):\n";
         for (int j = 0; j < alphabetSize; j++)
         {
             cout << "\n"
@@ -244,12 +244,12 @@ int main()
     cout << "\n";
     for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
         cout << "~";
-    cout << "\n\n\n";
+    cout << "\n\n";
 
     for (int i = 0; i < (13 * (alphabet.size() + 1)) / 2 - 8; i++)
         cout << " ";
 
-    cout << "TRANSITION TABLE\n\n\n";
+    cout << "TRANSITION TABLE\n\n";
     for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
         cout << "~";
     cout << "\n             "; //" Partition 1 ";
