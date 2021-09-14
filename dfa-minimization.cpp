@@ -86,7 +86,7 @@ int transition(int state, char symbol)
 
 int main()
 {
-    //freopen("input.txt", "r", stdin);
+    freopen("input.txt", "r", stdin);
     cout << "\nEnter the total number of states:\n";
     cin >> numberOfStates;
     vector<int> states(numberOfStates);
@@ -153,9 +153,17 @@ int main()
 
     map<int, int> stateInPartition;
 
-    cout << "\nReachable States: " << reachableStates << "\n";
-    cout << "\nReachable Final States: " << reachableFinalStates << "\n";
-    cout << "\nReachable Non-Final States: " << reachableNonFinalStates << "\n";
+    cout << "\n";
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n";
+    cout << "\nReachable States: " << reachableStates;
+    cout << "\nReachable Final States: " << reachableFinalStates;
+    cout << "\nReachable Non-Final States: " << reachableNonFinalStates;
+    cout << "\n";
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n\n";
     int tempInt = 0;
     while (1)
     {
@@ -228,10 +236,46 @@ int main()
         partitions = newPartitions;
     }
 
-    cout << "Number of equivalence states partitions: "<< partitions.size() <<"\n\nPartitions are:\n";
-    cout << partitions <<"\n";
+    cout << "Number of equivalence states partitions: " << partitions.size() << "\n\nPartitions are:\n";
+    for (int i = 0; i < partitions.size(); i++)
+    {
+        cout << "Partition " << i + 1 << ": " << partitions[i];
+    }
+    cout << "\n";
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n\n\n";
 
+    for (int i = 0; i < (13 * (alphabet.size() + 1)) / 2 - 8; i++)
+        cout << " ";
 
+    cout << "TRANSITION TABLE\n\n\n";
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n             "; //" Partition 1 ";
+    for (auto symbol : alphabet)
+    {
+        cout << "      " << symbol << "      ";
+    }
+    cout << "\n";
+    for (int i = 0; i < partitions.size(); i++)
+    {
+        cout << " Partition " << i + 1 << " ";
+        for (auto symbol : alphabet)
+        {
+            if (stateInPartition[transitionTable[partitions[i][0]][symbol]])
+                cout << " Partition " << stateInPartition[transitionTable[partitions[i][0]][symbol]] << " ";
+            else
+                cout << "      -      ";
+        }
+        cout << "\n";
+    }
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n\n\n";
+    for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
+        cout << "~";
+    cout << "\n\n";
     return 0;
 }
 /*
