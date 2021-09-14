@@ -156,19 +156,17 @@ int main()
     partitions.push_back(reachableNonFinalStates);
 
     map<int, int> stateInPartition;
-    map<int, vector<int>> equalStates;
 
     cout << "\nReachable States: " << reachableStates << "\n";
     cout << "\nReachable Final States: " << reachableFinalStates << "\n";
     cout << "\nReachable Non-Final States: " << reachableNonFinalStates << "\n";
-    return 0;
     int tempInt = 0;
     while (1)
     {
         tempInt++;
         vector<vector<int>> newPartitions;
         map<int, int> stateInNewPartition;
-        map<int, bool> allocated;
+        map<int, bool> allocated, checked;
         for (int i = 1; i <= partitions.size(); i++)
         {
             for (auto j : partitions[i - 1])
@@ -180,65 +178,47 @@ int main()
         {
             for (int i = 0; i < partition.size(); i++)
             {
+                if (checked[partition[i]])
+                    continue;
+                checked[partition[i]] = 1;
                 for (int j = i + 1; j < partition.size(); j++)
                 {
+                    bool flag = 1;
                     for (auto symbol : alphabet)
                     {
-                        if (stateInPartition[transitionTable[partition[i]][symbol]] == stateInPartition[transitionTable[partition[j]][symbol]])
+                        if (!(stateInPartition[transitionTable[partition[i]][symbol]] == stateInPartition[transitionTable[partition[j]][symbol]]))
                         {
-                            equalStates[partition[i]].push_back(partition[j]);
-                            equalStates[partition[j]].push_back(partition[i]);
-                            if(allocated[partition[i]])
+                            if (!allocated[partition[i]])
+                            {
+                                newPartitions.push_back({partition[i]});
+                                allocated[partition[i]] = 1;
+                                stateInNewPartition[partition[i]] = newPartitions.size();
+                            }
+                            flag = 0;
+                            break;
+                        }
+                    }
+                    if (flag)
+                    {
+                        checked[partition[j]] = 1;
+                        if (allocated[partition[i]])
+                        {
+                            newPartitions[stateInNewPartition[partition[i]]].push_back(partition[j]);
+                            allocated[partition[j]] = 1;
+                            stateInNewPartition[partition[j]] = stateInNewPartition[partition[i]];
                         }
                         else
                         {
-                            // insert i;
-                            for (auto ii : equalStates[i])
-                            {
-                                if (allocated[ii])
-                                {
-                                    for (auto iii : equalStates[i])
-                                    {
-                                        if (iii == ii)
-                                            continue;
-                                        newPartitions[stateInNewPartition[ii] - 1].push_back(iii);
-                                    }
-                                    allocated[i] = 1;
-                                    stateInNewPartition[i] = stateInNewPartition[ii];
-                                    break;
-                                }
-                            }
-                            if (!allocated[i])
-                            {
-                                newPartitions.push_back({i});
-                                allocated[i] = 1;
-                                stateInNewPartition[i] = newPartitions.size();
-                            }
-
-                            // insert j;
-                            for (auto jj : equalStates[j])
-                            {
-                                if (allocated[jj])
-                                {
-                                    newPartitions[stateInNewPartition[jj] - 1].push_back(j);
-                                    allocated[j] = 1;
-                                    stateInNewPartition[j] = stateInNewPartition[jj];
-                                    break;
-                                }
-                            }
-                            if (!allocated[j])
-                            {
-                                newPartitions.push_back({j});
-                                allocated[j] = 1;
-                                stateInNewPartition[j] = newPartitions.size();
-                            }
+                            newPartitions.push_back({partition[i], partition[j]});
+                            allocated[partition[i]] = allocated[partition[j]] = 1;
+                            stateInNewPartition[partition[i]] = stateInNewPartition[partition[j]] = newPartitions.size();
                         }
                     }
                 }
             }
         }
         cout << "\n\nnewPartitions: " << newPartitions << "\npartitions: " << partitions << "\n";
-        if (newPartitions.size() == partitions.size() || tempInt == 5)
+        if (newPartitions.size() == partitions.size())
             break;
         partitions = newPartitions;
     }
