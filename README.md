@@ -34,6 +34,7 @@ Following details will be printed:
 - reachable states in the input dfa;
 - reachable non-final states of the input dfa;
 - reachable final states of the input dfa;
+- number of equivalence states partitions;
+- all equivalence states partitions;
 - transition table of the equivalent minimized states dfa;
-- number of states in the equivalent minimized states dfa;
 ___

@@ -228,7 +228,9 @@ int main()
         partitions = newPartitions;
     }
 
-    cout << "\nMinimum number of states required for the given DFA are: " << partitions.size() << "\n\n\n";
+    cout << "Number of equivalence states partitions: "<< partitions.size() <<"\n\nPartitions are:\n";
+    cout << partitions <<"\n";
+
 
     return 0;
 }
