@@ -252,7 +252,7 @@ int main()
     cout << "TRANSITION TABLE\n\n";
     for (int i = 0; i < (13 * (alphabet.size() + 1)); i++)
         cout << "~";
-    cout << "\n             "; //" Partition 1 ";
+    cout << "\n Symbol  ->  "; //" Partition 1 ";
     for (auto symbol : alphabet)
     {
         cout << "      " << symbol << "      ";
