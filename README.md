@@ -1,7 +1,7 @@
 # dfa-minimization
 ___
 ## Introduction
-a program that takes a dfa as input and outputs the minimum possible dfa with the same language as the input dfa
+a program that takes a dfa as input and outputs the minimum possible states dfa with the same language as the input dfa
 ___
 
 <br>
