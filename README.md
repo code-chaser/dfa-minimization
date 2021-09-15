@@ -38,3 +38,4 @@ Following details will be printed:
 - all equivalence states partitions;
 - transition table of the equivalent minimized states dfa;
 ___
+___
