@@ -79,11 +79,6 @@ void reachable(int currentState, vector<char> alphabet = alphabet)
     return;
 }
 
-int transition(int state, char symbol)
-{
-    return transitionTable[state][symbol];
-}
-
 int main()
 {
     //freopen("./input.txt", "r", stdin);
