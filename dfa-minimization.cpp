@@ -69,12 +69,12 @@ vector<char> alphabet;
 
 void reachable(int currentState, vector<char> alphabet = alphabet)
 {
-    if (currentState != -1 && currentState)
-        isReachable[currentState] = 1;
-    for (auto i : alphabet)
+    if (currentState)
     {
-        if ((transitionTable[currentState][i] != -1) && (!isReachable[transitionTable[currentState][i]]))
-            reachable(transitionTable[currentState][i], alphabet);
+        isReachable[currentState] = 1;
+        for (auto i : alphabet)
+            if (transitionTable[currentState][i] && !isReachable[transitionTable[currentState][i]])
+                reachable(transitionTable[currentState][i], alphabet);
     }
     return;
 }
@@ -86,7 +86,8 @@ int transition(int state, char symbol)
 
 int main()
 {
-    //freopen("input.txt", "r", stdin);
+    //freopen("./input.txt", "r", stdin);
+
     cout << "\nEnter the total number of states:\n";
     cin >> numberOfStates;
     vector<int> states(numberOfStates);
@@ -104,17 +105,12 @@ int main()
     getchar();
     for (int i = 0; i < numberOfStates; i++)
     {
-        cout << "\nFor state " << i + 1 << " on entering following symbols, which state do we get to? (leave empty for phi):\n";
+        cout << "\nFor state " << i + 1 << " on entering following symbols, which state do we get to? (enter 0 for phi):\n";
         for (int j = 0; j < alphabetSize; j++)
         {
             cout << "\n"
                  << alphabet[j] << " : ";
-            string temp;
-            getline(cin, temp);
-            if (temp.size())
-                transitionTable[i + 1][alphabet[j]] = temp[0] - '0';
-            else
-                transitionTable[i + 1][alphabet[j]] = -1;
+            cin >> transitionTable[i + 1][alphabet[j]];
         }
     }
     cout << "\nTransition Table built successfully!\nMoving furhter!";
