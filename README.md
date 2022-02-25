@@ -26,8 +26,8 @@ You need to provide following details of the dfa:
 - alphabet;
 - transition table;
 - index of initial state;
-- number of final state(s);
-- index(s) of final state(s);
+- number of final states;
+- indices of final states;
 ___
 #### OUTPUTS
 Following details will be printed:
