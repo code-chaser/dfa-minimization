@@ -1,4 +1,4 @@
-# dfa-minimization
+# dfa-minimization &nbsp; [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/code-chaser/dfa-minimization/blob/main/LICENSE) [![Generic badge](https://img.shields.io/badge/Download-Code-purple.svg)](https://github.com/code-chaser/dfa-minimization/archive/refs/heads/main.zip)
 ___
 ## Introduction
 a program that takes a dfa as input and outputs the minimum possible states dfa with the same language as the input dfa
